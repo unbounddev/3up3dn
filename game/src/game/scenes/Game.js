@@ -15,7 +15,7 @@ export class Game extends Scene
       this.state = this.room.state;
       const centerX = this.scale.width/2;
       const centerY = this.scale.height/2;
-      const displayCard = this.add.image(centerX, centerY, 'BACK').setOrigin(0.5).setScale(0.5);
+      const displayCard = this.add.image(centerX, centerY, 'BACK').setOrigin(0.5).setScale(0.4);
 
       /** @typedef {{ x: number, y: number }} Position */
       /** @typedef {(card: Phaser.GameObjects.Image, i: number) => Position} PositionFunc
@@ -23,7 +23,7 @@ export class Game extends Scene
       const DOWN_POSITIONS = [
         (card, i) => ({ 
           x: centerX-(card.displayWidth+(10*window.devicePixelRatio)) + (i*(card.displayWidth+(10*window.devicePixelRatio))),
-          y: card.displayHeight*2+(10*window.devicePixelRatio)
+          y: card.displayHeight*1.5+(10*window.devicePixelRatio)
         }),
         (card, i) => ({ 
           x: centerX-(card.displayWidth+(10*window.devicePixelRatio)) + (i*(card.displayWidth+(10*window.devicePixelRatio))),
@@ -43,7 +43,7 @@ export class Game extends Scene
       const HAND_POS = [
         (card, i) => ({
           x: centerX,
-          y: (card.displayHeight/2)+(10*window.devicePixelRatio)
+          y: (card.displayHeight/2)+(5*window.devicePixelRatio)
         }),
         (card, i) => ({
           x: centerX,
@@ -92,7 +92,8 @@ export class Game extends Scene
       }
       for (let i = 0; i < 6; i++){
         for (let j = 0; j < this.room.state.players.size; j++){
-          let card = this.add.image(centerX, centerY, 'BACK').setOrigin(0.5).setScale(0.4);
+          let isCurrPlayer = this.room.state.players.size > 2 && j == 2 ? true : this.room.state.players.size < 3 && j == 1 ? 1 : false;
+          let card = this.add.image(centerX, centerY, 'BACK').setOrigin(0.5).setScale(isCurrPlayer ? 0.4 : 0.3);
           const pos = handPositions[j](card, i);
           dealAnimations.push({
             targets: card,
@@ -107,7 +108,6 @@ export class Game extends Scene
       })
 
       this.room.onStateChange(state => {
-        console.log(state)
         this.state = state;
       })
 

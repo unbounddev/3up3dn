@@ -33,9 +33,15 @@ export class Preloader extends Scene
 
       this.load.image('logo', 'logo.png');
       for (const card of CARDS) {
-        this.load.svg(card, card + '.svg');
+        this.load.svg(card, card + '.svg', { 
+          width: (150/2)*window.devicePixelRatio,
+          height: (200/2)*window.devicePixelRatio
+        });
       }
-      this.load.svg('BACK', 'BACK.svg');
+      this.load.svg('BACK', 'BACK.svg', { 
+        width: (150/2)*window.devicePixelRatio,
+        height: (200/2)*window.devicePixelRatio
+      });
       this.load.svg('signal', 'signal.svg', { 
         width: 36 * window.devicePixelRatio, 
         height: 36 * window.devicePixelRatio 

@@ -11,9 +11,6 @@ export class Preloader extends Scene
 
     init ()
     {
-        //  We loaded this image in our Boot Scene, so we can display it here
-        this.add.image(512, 384, 'background');
-
         //  A simple progress bar. This is the outline of the bar.
         this.add.rectangle(512, 384, 468, 32).setStrokeStyle(1, 0xffffff);
 
@@ -36,9 +33,11 @@ export class Preloader extends Scene
 
       this.load.image('logo', 'logo.png');
       for (const card of CARDS) {
-        this.load.image(card, card + '.png');
+        this.load.svg(card, card + '.svg');
       }
-      this.load.image('BACK', 'BACK.png');
+      this.load.svg('BACK', 'BACK.svg');
+      this.load.svg('signal', 'signal.svg', { scale: 2 });
+      this.load.svg('x', 'x.svg', { scale: 2.5 });
     }
 
     create ()

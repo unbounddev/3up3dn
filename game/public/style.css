@@ -3,6 +3,7 @@ body {
     padding: 0;
     color: rgba(255, 255, 255, 0.87);
     background-color: #000000;
+    font-family: sans-serif;
 }
 
 #app {
@@ -13,3 +14,47 @@ body {
     justify-content: center;
     align-items: center;
 }
+
+#server-settings {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#server-settings-modal {
+  background-color: white;
+  border-radius: 16px;
+  display: none;
+}
+
+#server-settings-modal.visible {
+  display: block;
+}
+
+#server-settings-form {
+  display: flex;
+  flex-direction: column;
+  color: black;
+  padding: 16px;
+  gap: 8px;
+}
+
+#server-settings-form input {
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+  padding: 8px;
+  outline: none;
+}
+
+#server-settings-form button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+

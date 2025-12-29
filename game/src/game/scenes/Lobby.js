@@ -12,14 +12,31 @@ export class Lobby extends Scene
     {
       this.client = this.registry.get("client");
       this.room = this.registry.get("room")
-      this.cameras.main.setBackgroundColor(0x00ff00);
+      this.cameras.main.setBackgroundColor(0x00512C);
       this.state = null;
       this.$ = getStateCallbacks(this.room);
 
       this.playersJoined = this.add.text(this.scale.width/2, this.scale.height/2, `${0} have joined`, {
-        fontFamily: 'Arial Black', fontSize: 38, color: '#ffffff', align: 'center'
+        fontFamily: 'sans-serif', fontSize: 24*window.devicePixelRatio, color: '#ffffff', align: 'center'
       }).setOrigin(0.5)
 
+      const startBtn = this.add.rectangle(this.scale.width/2, this.scale.height/2, 200*window.devicePixelRatio, 40*window.devicePixelRatio, 0xffffff).setOrigin(0.5)
+      const startText = this.add.text(this.scale.width/2, this.scale.height/2, 'Start', {
+        fontFamily: 'sans-serif', 
+        fontSize: 24*window.devicePixelRatio, 
+        color: '#000000', 
+        align: 'center'
+      }).setOrigin(0.5);
+      startBtn.setDisplaySize(startText.displayWidth+40*window.devicePixelRatio, startText.displayHeight+10*window.devicePixelRatio)
+      startBtn.setPosition(
+        this.scale.width/2, 
+        (this.scale.height/2) + this.playersJoined.displayHeight + (10*window.devicePixelRatio) + (startBtn.displayHeight/2))
+      startText.setPosition(this.scale.width/2, (this.scale.height/2) + this.playersJoined.displayHeight + (10*window.devicePixelRatio) + (startBtn.displayHeight/2))
+      startBtn.setInteractive()
+        
+      startBtn.on('pointerdown', () => {
+        this.room.send("start");
+      });
 
       this.room.onStateChange.once(state => {
         this.state = state;
@@ -37,10 +54,6 @@ export class Lobby extends Scene
         }
       })
 
-      this.input.on('pointerdown', () => {
-        this.room.send("start");
-
-      });
     }
 
     updatePlayersJoined() {

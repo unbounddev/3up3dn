@@ -12,16 +12,16 @@ export class Preloader extends Scene
     init ()
     {
         //  A simple progress bar. This is the outline of the bar.
-        this.add.rectangle(512, 384, 468, 32).setStrokeStyle(1, 0xffffff);
+        this.add.rectangle(this.scale.width/2, this.scale.height/2, this.scale.width/2, 32*window.devicePixelRatio).setStrokeStyle(1*window.devicePixelRatio, 0xffffff).setOrigin(0.5);
 
         //  This is the progress bar itself. It will increase in size from the left based on the % of progress.
-        const bar = this.add.rectangle(512-230, 384, 4, 28, 0xffffff);
+        const bar = this.add.rectangle(this.scale.width/2-(this.scale.width/4)+(4*window.devicePixelRatio), this.scale.height/2, 4*window.devicePixelRatio, 28*window.devicePixelRatio, 0xffffff);
 
         //  Use the 'progress' event emitted by the LoaderPlugin to update the loading bar
         this.load.on('progress', (progress) => {
 
             //  Update the progress bar (our bar is 464px wide, so 100% = 464px)
-            bar.width = 4 + (460 * progress);
+            bar.width = (4 * window.devicePixelRatio) + ((this.scale.width/2 - (4 * window.devicePixelRatio)) * progress);
 
         });
     }

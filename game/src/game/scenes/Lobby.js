@@ -16,8 +16,6 @@ export class Lobby extends Scene
       this.state = null;
       this.$ = getStateCallbacks(this.room);
 
-      this.add.image(512, 384, 'background').setAlpha(0.5);
-      
       this.playersJoined = this.add.text(this.scale.width/2, this.scale.height/2, `${0} have joined`, {
         fontFamily: 'Arial Black', fontSize: 38, color: '#ffffff', align: 'center'
       }).setOrigin(0.5)

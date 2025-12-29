@@ -1,5 +1,7 @@
 import { Scene } from 'phaser';
 
+const CARDS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "C", "C1", "C2"];
+
 export class Preloader extends Scene
 {
     constructor ()
@@ -29,10 +31,14 @@ export class Preloader extends Scene
 
     preload ()
     {
-        //  Load the assets for the game - Replace with your own assets
-        this.load.setPath('assets');
+      //  Load the assets for the game - Replace with your own assets
+      this.load.setPath('assets');
 
-        this.load.image('logo', 'logo.png');
+      this.load.image('logo', 'logo.png');
+      for (const card of CARDS) {
+        this.load.image(card, card + '.png');
+      }
+      this.load.image('BACK', 'BACK.png');
     }
 
     create ()

@@ -23,12 +23,12 @@ export class MainMenu extends Scene
         this.signal.setInteractive()
         this.noSignal = this.add.image(this.scale.width*0.9, this.scale.height*0.1, 'x').setOrigin(0.5).setVisible(false)
 
-        const joinBtn = this.add.rectangle(this.scale.width/2, this.scale.height/2, 200, 40, 0xffffff).setOrigin(0.5)
+        const joinBtn = this.add.rectangle(this.scale.width/2, this.scale.height/2, 200*window.devicePixelRatio, 40*window.devicePixelRatio, 0xffffff).setOrigin(0.5)
         const joinText = this.add.text(this.scale.width/2, this.scale.height/2, 'Join', {
-            fontFamily: 'sans-serif', fontSize: 38, color: '#000000',
+            fontFamily: 'sans-serif', fontSize: 24*window.devicePixelRatio, color: '#000000',
             align: 'center'
         }).setOrigin(0.5);
-        joinBtn.setDisplaySize(joinText.displayWidth+40, joinText.displayHeight+10)
+        joinBtn.setDisplaySize(joinText.displayWidth+40*window.devicePixelRatio, joinText.displayHeight+10*window.devicePixelRatio)
         joinBtn.setInteractive()
         
         this.updateClient()

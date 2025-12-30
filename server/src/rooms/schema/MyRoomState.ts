@@ -9,6 +9,7 @@ export class Player extends Schema {
 
 export class MyRoomState extends Schema {
   @type({ map: Player }) players = new MapSchema<Player>();
+  @type("string") currentPlayer = "";
   @type("string") state = "LOBBY";
   @type({ array: "string" }) draw: string[] = new ArraySchema<string>();
   @type({ array: "string" }) discard: string[] = new ArraySchema<string>();

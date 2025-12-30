@@ -80,6 +80,9 @@ export class MyRoom extends Room<MyRoomState> {
     const player = new Player();
     player.name = `P${this.state.players.size+1}`;
     this.state.players.set(client.sessionId, player);
+    if (!this.state.currentPlayer) { 
+      this.state.currentPlayer = client.sessionId;
+    }
   }
 
   onLeave (client: Client, consented: boolean) {

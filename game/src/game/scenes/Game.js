@@ -15,7 +15,7 @@ export class Game extends Scene
       this.state = this.room.state;
       const centerX = this.scale.width/2;
       const centerY = this.scale.height/2;
-      const displayCard = this.add.image(centerX, centerY, 'BACK').setOrigin(0.5).setScale(0.4);
+      const displayCard = this.add.image(centerX, centerY, 'BACK').setOrigin(0.5).setScale(0.4).setDepth(100);
 
       /** @typedef {{ x: number, y: number }} Position */
       /** @typedef {(card: Phaser.GameObjects.Image, i: number) => Position} PositionFunc

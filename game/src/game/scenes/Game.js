@@ -1,5 +1,7 @@
 import { Scene } from 'phaser';
 
+const CARDS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'C', 'C1', 'C2'];
+
 export class Game extends Scene
 {
     constructor ()
@@ -24,49 +26,58 @@ export class Game extends Scene
 
       /** @typedef {{ x: number, y: number }} Position */
       /** @typedef {(card: Phaser.GameObjects.Image, i: number) => Position} PositionFunc
-      /** @type {PositionFunc[]} */
-      const DOWN_POSITIONS = [
-        (card, i) => ({ 
+      /** @type {{ UP: PositionFunc, RIGHT: PositionFunc, DOWN: PositionFunc, LEFT: PositionFunc}} */
+      this.DOWN_POSITIONS = {
+        UP: (card, i) => ({ 
           x: centerX-(card.displayWidth+(10*window.devicePixelRatio)) + (i*(card.displayWidth+(10*window.devicePixelRatio))),
-          y: card.displayHeight*1.5+(10*window.devicePixelRatio)
+          y: card.displayHeight*1.5+(10*window.devicePixelRatio),
+          scale: 0.3
         }),
-        (card, i) => ({ 
+        RIGHT: (card, i) => ({ 
           x: this.scale.width-(card.displayHeight*1.5+(10*window.devicePixelRatio)),
           y: centerY-(card.displayWidth+(10*window.devicePixelRatio)) + (i*(card.displayWidth+(10*window.devicePixelRatio))),
-          angle: 270 
+          angle: 270,
+          scale: 0.3
         }),
-        (card, i) => ({ 
+        DOWN: (card, i) => ({ 
           x: centerX-(card.displayWidth+(10*window.devicePixelRatio)) + (i*(card.displayWidth+(10*window.devicePixelRatio))),
-          y: this.scale.height-(card.displayHeight*2+(10*window.devicePixelRatio))
+          y: this.scale.height-(card.displayHeight*2+(10*window.devicePixelRatio)),
+          scale: 0.3
         }),
-        (card, i) => ({ 
+        LEFT: (card, i) => ({ 
           x: (card.displayHeight*1.5+(10*window.devicePixelRatio)),
           y: centerY-(card.displayWidth+(10*window.devicePixelRatio)) + (i*(card.displayWidth+(10*window.devicePixelRatio))),
-          angle: 90
+          angle: 90,
+          scale: 0.3
         }),
-      ]
+      }
 
-      /** @type {PositionFunc[]} */
-      const HAND_POS = [
-        (card, i) => ({
+      /** @type {{ UP: PositionFunc, RIGHT: PositionFunc, DOWN: PositionFunc, LEFT: PositionFunc}} */
+      this.HAND_POS = {
+        UP: (card, i) => ({
           x: centerX,
-          y: (card.displayHeight/2)+(5*window.devicePixelRatio)
+          y: (card.displayHeight/2)+(5*window.devicePixelRatio),
+          scale: 0.3
         }),
-        (card, i) => ({
+        RIGHT: (card, i) => ({
           x: this.scale.width-((card.displayHeight/2)+(5*window.devicePixelRatio)),
           y: centerY,
-          angle: 270
+          angle: 270,
+          scale: 0.3
         }),
-        (card, i) => ({
+        DOWN: (card, i) => ({
           x: centerX-((card.displayWidth*2.5)+((10*window.devicePixelRatio)*2.5)) + (i*(card.displayWidth+(10*window.devicePixelRatio))),
-          y: this.scale.height-((card.displayHeight/2)+(10*window.devicePixelRatio))
+          y: this.scale.height-((card.displayHeight/2)+(10*window.devicePixelRatio)),
+          scale: 0.4,
+          texture: card.getData("value")
         }),
-        (card, i) => ({
+        LEFT: (card, i) => ({
           x: (card.displayHeight/2)+(5*window.devicePixelRatio),
           y: centerY,
-          angle: 90
+          angle: 90,
+          scale: 0.3
         }),
-      ]
+      }
 
       // create player cards
       let playerIds = Array.from(this.room.state.players.keys())
@@ -105,54 +116,9 @@ export class Game extends Scene
         card.setData("value", this.room.state.draw[i]);
         this.drawCards.push(card)
       }
+
+      this.dealCards()
       
-      // deal down cards
-      /** @type {Phaser.Types.Tweens.TweenBuilderConfig[]} */
-      const dealAnimations = [];
-      /** @type {PositionFunc[]} */
-      let downPositions = [];
-      if (this.room.state.players.size == 2){
-        downPositions = [DOWN_POSITIONS[0], DOWN_POSITIONS[2]]
-      } else {
-        downPositions = DOWN_POSITIONS
-      }
-      for (let i = 0; i < 3; i++){
-        for (let j = 0; j < Math.min(this.room.state.players.size, DOWN_POSITIONS.length); j++){
-          let card = this.add.image(centerX, centerY, 'BACK').setOrigin(0.5).setScale(0.3);
-          console.log(card.angle)
-          const pos = downPositions[j](card, i);
-          dealAnimations.push({
-            targets: card,
-            ...pos,
-            duration: 200
-          })
-        }
-      }
-
-      // deal hand
-      /** @type {PositionFunc[]} */
-      let handPositions = [];
-      if (this.room.state.players.size == 2){
-        handPositions = [HAND_POS[0], HAND_POS[2]]
-      } else {
-        handPositions = HAND_POS
-      }
-      for (let i = 0; i < 6; i++){
-        for (let j = 0; j < Math.min(this.room.state.players.size, HAND_POS.length); j++){
-          let isCurrPlayer = this.room.state.players.size > 2 && j == 2 ? true : this.room.state.players.size < 3 && j == 1 ? 1 : false;
-          let card = this.add.image(centerX, centerY, 'BACK').setOrigin(0.5).setScale(isCurrPlayer ? 0.4 : 0.3);
-          const pos = handPositions[j](card, i);
-          dealAnimations.push({
-            targets: card,
-            ...pos,
-            duration: 200
-          })
-        }
-      }
-      this.tweens.chain({
-        tweens: dealAnimations
-      })
-
       // TODO: If player count is less than two send player to lobby
 
       this.room.onStateChange(state => {
@@ -164,6 +130,80 @@ export class Game extends Scene
         this.scene.start('GameOver');
 
       });
+    }
+
+    dealCards() {
+      const visiblePlayers = this.visiblePlayers();
+
+      let downPositions = [];
+      let handPositions = [];
+      switch (visiblePlayers.length) {
+        case 2:
+          downPositions = [this.DOWN_POSITIONS.UP, this.DOWN_POSITIONS.DOWN];
+          handPositions = [this.HAND_POS.UP, this.HAND_POS.DOWN];
+          break;
+        case 3:
+          downPositions = [this.DOWN_POSITIONS.UP, this.DOWN_POSITIONS.RIGHT, this.DOWN_POSITIONS.DOWN];
+          handPositions = [this.HAND_POS.UP, this.HAND_POS.RIGHT, this.HAND_POS.DOWN];
+          break;
+        default:
+          downPositions = [this.DOWN_POSITIONS.LEFT, this.DOWN_POSITIONS.UP, this.DOWN_POSITIONS.RIGHT, this.DOWN_POSITIONS.DOWN];
+          handPositions = [this.HAND_POS.LEFT, this.HAND_POS.UP, this.HAND_POS.RIGHT, this.HAND_POS.DOWN];
+      }
+
+      const downCards = visiblePlayers.map(p => Array.from((this.playerCards.get(p)).down).sort((a, b) => CARDS.indexOf(a.getData("value")) - CARDS.indexOf(b.getData("value"))));
+      const handCards = visiblePlayers.map(p => Array.from((this.playerCards.get(p)).hand).sort((a, b) => CARDS.indexOf(a.getData("value")) - CARDS.indexOf(b.getData("value"))));
+
+      const dealAnimations = []
+      
+      for (let i = 0; i < 3; i++){
+        for (let j = 0; j < downCards.length; j++) {
+          dealAnimations.push({
+            targets: downCards[j][i],
+            duration: 200,
+            ...downPositions[j](downCards[j][i], i)
+          })
+        }
+      }
+
+      for (let i = 0; i < 6; i++) {
+        for (let j = 0; j < handCards.length; j++) {
+          dealAnimations.push({
+            targets: handCards[j][i],
+            duration: 200,
+            ...handPositions[j](handCards[j][i], i)
+          })
+        }
+      }
+
+      console.log(dealAnimations)
+
+      this.tweens.chain({
+        tweens: dealAnimations
+      })
+
+    }
+
+    visiblePlayers() {
+      // TODO: Allow player to control which players are visible
+      const currentPlayer = this.room.state.currentPlayer;
+      const players = Array.from(this.room.state.players.keys())
+      const clientPlayer = this.room.sessionId;
+      let clientIndex = players.indexOf(clientPlayer);
+      const currPlayerIndex = players.indexOf(currentPlayer);
+      
+      if (players.length <= Object.keys(this.DOWN_POSITIONS).length) {
+        if (players.length == 2 && clientIndex !== 1) {
+          return players.reverse();
+        } else if (clientIndex !== players.length-1) {
+          const removed = players.splice(clientIndex+1);
+          players.unshift(...removed);
+          return players;
+        } else {
+          return players
+        }
+      }
+
     }
 
 }

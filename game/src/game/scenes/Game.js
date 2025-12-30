@@ -13,6 +13,8 @@ export class Game extends Scene
       this.room = this.registry.get("room")
       this.cameras.main.setBackgroundColor(0x00512C);
       this.state = this.room.state;
+      /** @type {Map<string, Phaser.GameObjects.Image[]>} */
+      this.playerCards = new Map() 
       const centerX = this.scale.width/2;
       const centerY = this.scale.height/2;
       const displayCard = this.add.image(centerX, centerY, 'BACK').setOrigin(0.5).setScale(0.4).setDepth(100);
@@ -62,6 +64,37 @@ export class Game extends Scene
           angle: 90
         }),
       ]
+
+      // create player cards
+      let playerIds = Array.from(this.room.state.players.keys())
+      for (let i = 0; i < playerIds.length; i++){
+        let player = this.room.state.players.get(playerIds[i])
+        let cards = {
+          down: [],
+          up: [],
+          hand: []
+        };
+        if (this.playerCards.has(playerIds[i])){
+          cards = this.playerCards.get(playerIds[i]);
+        } else {
+          this.playerCards.set(playerIds[i], cards);
+        }
+        // create down cards
+        for (let j = 0; j < player.down.length; j++){
+          let card = this.add.image(centerX, centerY, 'BACK').setOrigin(0.5).setScale(0.4);
+          card.setData("flipped", false);
+          card.setData("value", player.down[j]);
+          cards.down.push(card) 
+        }
+        // create hand cards 
+        for (let j = 0; j < player.hand.length; j++){
+          let card = this.add.image(centerX, centerY, 'BACK').setOrigin(0.5).setScale(0.4);
+          card.setData("flipped", false);
+          card.setData("value", player.hand[j]);
+          cards.hand.push(card) 
+        }
+      }
+      console.log(this.playerCards)
       
       // deal down cards
       /** @type {Phaser.Types.Tweens.TweenBuilderConfig[]} */

@@ -14,13 +14,14 @@ export class Game extends Scene
       this.client = this.registry.get("client");
       this.room = this.registry.get("room")
       this.cameras.main.setBackgroundColor(0x00512C);
-      this.state = this.room.state;
       /** @type {Map<string, Phaser.GameObjects.Image[]>} */
       this.playerCards = new Map();
       /** @type {Phaser.GameObjects.Image[]} */
       this.discardCards = [];
       /** @type {Phaser.GameObjects.Image[]} */
       this.drawCards = [];
+      this.selectedCards = [];
+      this.selectedGraphics = [];
       const centerX = this.scale.width/2;
       const centerY = this.scale.height/2;
 
@@ -97,6 +98,7 @@ export class Game extends Scene
           const newScale = 0.4;
           const scaledHeight = card.height * newScale;
           const scaledWidth = card.width * newScale;
+          card.setData("flipped", true);
           return {
             x: centerX-((scaledWidth*2.5)+((10*window.devicePixelRatio)*2.5)) + (i*(scaledWidth+(10*window.devicePixelRatio))),
             y: this.scale.height-((scaledHeight/2)+(10*window.devicePixelRatio)),
@@ -133,6 +135,7 @@ export class Game extends Scene
         // create down cards
         for (let j = 0; j < player.down.length; j++){
           let card = this.add.image(centerX, centerY, 'BACK').setOrigin(0.5).setScale(0.4);
+          card.setInteractive()
           card.setData("flipped", false);
           card.setData("value", player.down[j]);
           cards.down.push(card) 
@@ -140,8 +143,10 @@ export class Game extends Scene
         // create hand cards 
         for (let j = 0; j < player.hand.length; j++){
           let card = this.add.image(centerX, centerY, 'BACK').setOrigin(0.5).setScale(0.4);
+          card.setInteractive()
           card.setData("flipped", false);
           card.setData("value", player.hand[j]);
+          card.on("pointerdown", () => this.handleSelection(card))
           cards.hand.push(card) 
         }
       }
@@ -155,12 +160,6 @@ export class Game extends Scene
       }
 
       this.dealCards()
-      
-      // TODO: If player count is less than two send player to lobby
-
-      this.room.onStateChange(state => {
-        this.state = state;
-      })
 
       this.input.once('pointerdown', () => {
 
@@ -241,6 +240,35 @@ export class Game extends Scene
         }
       }
 
+    }
+    
+    /**
+     * @param {Phaser.GameObjects.Image} card 
+     */
+    handleSelection(card) {
+      let gameState = this.room.state.state;
+      if (gameState == "SETUP"){
+        let cardIndex = this.selectedCards.findIndex(c => c.x == card.x && c.y == card.y) 
+        let rectIndex = this.selectedGraphics.findIndex(c => c.x == card.x && c.y == card.y) 
+        console.log(cardIndex, rectIndex)
+        if (cardIndex < 0) {
+          if (this.selectedCards.length > 2) { return };
+          console.log("selecting card")
+          this.selectedCards.push(card)
+          let rectangle = this.add.rectangle(card.x, card.y, card.displayWidth+4*window.devicePixelRatio, card.displayHeight+4*window.devicePixelRatio);
+          rectangle.setStrokeStyle(4*window.devicePixelRatio, 0xff0000);
+          this.selectedGraphics.push(rectangle);
+        } else {
+          console.log("deselecting card");
+          this.selectedCards.splice(cardIndex, 1);
+          if (rectIndex >= 0){
+            console.log("remove rectangle")
+            let rect = this.selectedGraphics.splice(rectIndex, 1)[0];
+            rect.destroy();
+            rect = null;
+          }
+        }
+      }
     }
 
 }

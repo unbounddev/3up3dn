@@ -26,16 +26,18 @@ export class Game extends Scene
           y: card.displayHeight*1.5+(10*window.devicePixelRatio)
         }),
         (card, i) => ({ 
-          x: centerX-(card.displayWidth+(10*window.devicePixelRatio)) + (i*(card.displayWidth+(10*window.devicePixelRatio))),
-          y: this.scale.height-(card.displayHeight+(10*window.devicePixelRatio))
+          x: this.scale.width-(card.displayHeight*1.5+(10*window.devicePixelRatio)),
+          y: centerY-(card.displayWidth+(10*window.devicePixelRatio)) + (i*(card.displayWidth+(10*window.devicePixelRatio))),
+          angle: 270 
         }),
         (card, i) => ({ 
           x: centerX-(card.displayWidth+(10*window.devicePixelRatio)) + (i*(card.displayWidth+(10*window.devicePixelRatio))),
           y: this.scale.height-(card.displayHeight*2+(10*window.devicePixelRatio))
         }),
         (card, i) => ({ 
-          x: centerX-(card.displayWidth+(10*window.devicePixelRatio)) + (i*(card.displayWidth+(10*window.devicePixelRatio))),
-          y: this.scale.height-(card.displayHeight+(10*window.devicePixelRatio))
+          x: (card.displayHeight*1.5+(10*window.devicePixelRatio)),
+          y: centerY-(card.displayWidth+(10*window.devicePixelRatio)) + (i*(card.displayWidth+(10*window.devicePixelRatio))),
+          angle: 90
         }),
       ]
 
@@ -46,16 +48,18 @@ export class Game extends Scene
           y: (card.displayHeight/2)+(5*window.devicePixelRatio)
         }),
         (card, i) => ({
-          x: centerX,
-          y: (card.displayHeight/2)+(10*window.devicePixelRatio)
+          x: this.scale.width-((card.displayHeight/2)+(5*window.devicePixelRatio)),
+          y: centerY,
+          angle: 270
         }),
         (card, i) => ({
           x: centerX-((card.displayWidth*2.5)+((10*window.devicePixelRatio)*2.5)) + (i*(card.displayWidth+(10*window.devicePixelRatio))),
           y: this.scale.height-((card.displayHeight/2)+(10*window.devicePixelRatio))
         }),
         (card, i) => ({
-          x: centerX,
-          y: (card.displayHeight/2)+(10*window.devicePixelRatio)
+          x: (card.displayHeight/2)+(5*window.devicePixelRatio),
+          y: centerY,
+          angle: 90
         }),
       ]
       
@@ -72,11 +76,11 @@ export class Game extends Scene
       for (let i = 0; i < 3; i++){
         for (let j = 0; j < this.room.state.players.size; j++){
           let card = this.add.image(centerX, centerY, 'BACK').setOrigin(0.5).setScale(0.3);
+          console.log(card.angle)
           const pos = downPositions[j](card, i);
           dealAnimations.push({
             targets: card,
-            x: pos.x,
-            y: pos.y,
+            ...pos,
             duration: 200
           })
         }
@@ -97,8 +101,7 @@ export class Game extends Scene
           const pos = handPositions[j](card, i);
           dealAnimations.push({
             targets: card,
-            x: pos.x,
-            y: pos.y,
+            ...pos,
             duration: 200
           })
         }

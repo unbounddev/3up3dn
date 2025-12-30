@@ -85,6 +85,7 @@ export class MyRoom extends Room<MyRoomState> {
   onLeave (client: Client, consented: boolean) {
     console.log(client.sessionId, "left!");
     this.state.players.delete(client.sessionId);
+    // TODO: If player count is less than 2 clean up game
   }
 
   onDispose() {

@@ -13,10 +13,11 @@ export class Lobby extends Scene
       this.client = this.registry.get("client");
       this.room = this.registry.get("room")
       this.cameras.main.setBackgroundColor(0x00512C);
-      this.state = null;
+      this.state = this.room.state;
       this.$ = getStateCallbacks(this.room);
+      console.log(this.room.state)
 
-      this.playersJoined = this.add.text(this.scale.width/2, this.scale.height/2, `${0} have joined`, {
+      this.playersJoined = this.add.text(this.scale.width/2, this.scale.height/2, `${this.room.state.players ? this.room.state.players.size : 0} have joined`, {
         fontFamily: 'sans-serif', fontSize: 24*window.devicePixelRatio, color: '#ffffff', align: 'center'
       }).setOrigin(0.5)
 

@@ -74,7 +74,7 @@ export class Game extends Scene
         downPositions = DOWN_POSITIONS
       }
       for (let i = 0; i < 3; i++){
-        for (let j = 0; j < this.room.state.players.size; j++){
+        for (let j = 0; j < Math.min(this.room.state.players.size, DOWN_POSITIONS.length); j++){
           let card = this.add.image(centerX, centerY, 'BACK').setOrigin(0.5).setScale(0.3);
           console.log(card.angle)
           const pos = downPositions[j](card, i);
@@ -95,7 +95,7 @@ export class Game extends Scene
         handPositions = HAND_POS
       }
       for (let i = 0; i < 6; i++){
-        for (let j = 0; j < this.room.state.players.size; j++){
+        for (let j = 0; j < Math.min(this.room.state.players.size, HAND_POS.length); j++){
           let isCurrPlayer = this.room.state.players.size > 2 && j == 2 ? true : this.room.state.players.size < 3 && j == 1 ? 1 : false;
           let card = this.add.image(centerX, centerY, 'BACK').setOrigin(0.5).setScale(isCurrPlayer ? 0.4 : 0.3);
           const pos = handPositions[j](card, i);
@@ -109,6 +109,8 @@ export class Game extends Scene
       this.tweens.chain({
         tweens: dealAnimations
       })
+
+      // TODO: If player count is less than two send player to lobby
 
       this.room.onStateChange(state => {
         this.state = state;

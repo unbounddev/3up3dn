@@ -14,10 +14,13 @@ export class Game extends Scene
       this.cameras.main.setBackgroundColor(0x00512C);
       this.state = this.room.state;
       /** @type {Map<string, Phaser.GameObjects.Image[]>} */
-      this.playerCards = new Map() 
+      this.playerCards = new Map();
+      /** @type {Phaser.GameObjects.Image[]} */
+      this.discardCards = [];
+      /** @type {Phaser.GameObjects.Image[]} */
+      this.drawCards = [];
       const centerX = this.scale.width/2;
       const centerY = this.scale.height/2;
-      const displayCard = this.add.image(centerX, centerY, 'BACK').setOrigin(0.5).setScale(0.4).setDepth(100);
 
       /** @typedef {{ x: number, y: number }} Position */
       /** @typedef {(card: Phaser.GameObjects.Image, i: number) => Position} PositionFunc
@@ -94,7 +97,14 @@ export class Game extends Scene
           cards.hand.push(card) 
         }
       }
-      console.log(this.playerCards)
+
+      // create draw cards 
+      for (let i = 0; i < this.room.state.draw.length; i++){
+        let card = this.add.image(centerX, centerY, 'BACK').setOrigin(0.5).setScale(0.4);
+        card.setData("flipped", false);
+        card.setData("value", this.room.state.draw[i]);
+        this.drawCards.push(card)
+      }
       
       // deal down cards
       /** @type {Phaser.Types.Tweens.TweenBuilderConfig[]} */

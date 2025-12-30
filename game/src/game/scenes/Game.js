@@ -28,55 +28,92 @@ export class Game extends Scene
       /** @typedef {(card: Phaser.GameObjects.Image, i: number) => Position} PositionFunc
       /** @type {{ UP: PositionFunc, RIGHT: PositionFunc, DOWN: PositionFunc, LEFT: PositionFunc}} */
       this.DOWN_POSITIONS = {
-        UP: (card, i) => ({ 
-          x: centerX-(card.displayWidth+(10*window.devicePixelRatio)) + (i*(card.displayWidth+(10*window.devicePixelRatio))),
-          y: card.displayHeight*1.5+(10*window.devicePixelRatio),
-          scale: 0.3
-        }),
-        RIGHT: (card, i) => ({ 
-          x: this.scale.width-(card.displayHeight*1.5+(10*window.devicePixelRatio)),
-          y: centerY-(card.displayWidth+(10*window.devicePixelRatio)) + (i*(card.displayWidth+(10*window.devicePixelRatio))),
-          angle: 270,
-          scale: 0.3
-        }),
-        DOWN: (card, i) => ({ 
-          x: centerX-(card.displayWidth+(10*window.devicePixelRatio)) + (i*(card.displayWidth+(10*window.devicePixelRatio))),
-          y: this.scale.height-(card.displayHeight*2+(10*window.devicePixelRatio)),
-          scale: 0.3
-        }),
-        LEFT: (card, i) => ({ 
-          x: (card.displayHeight*1.5+(10*window.devicePixelRatio)),
-          y: centerY-(card.displayWidth+(10*window.devicePixelRatio)) + (i*(card.displayWidth+(10*window.devicePixelRatio))),
-          angle: 90,
-          scale: 0.3
-        }),
+        UP: (card, i) => { 
+          const newScale = 0.3;
+          const scaledHeight = card.height * newScale;
+          const scaledWidth = card.width * newScale;
+          return { 
+            x: centerX-(scaledWidth+(10*window.devicePixelRatio)) + (i*(scaledWidth+(10*window.devicePixelRatio))),
+            y: scaledHeight*1.5+(10*window.devicePixelRatio),
+            scale: newScale
+          }
+        },
+        RIGHT: (card, i) => { 
+          const newScale = 0.3;
+          const scaledHeight = card.height * newScale;
+          const scaledWidth = card.width * newScale;
+          return { 
+            x: this.scale.width-(scaledHeight*1.5+(10*window.devicePixelRatio)),
+            y: centerY-(scaledWidth+(10*window.devicePixelRatio)) + (i*(scaledWidth+(10*window.devicePixelRatio))),
+            angle: 270,
+            scale: newScale
+          }
+        },
+        DOWN: (card, i) => {
+          const newScale = 0.3;
+          const scaledHeight = card.height * newScale;
+          const scaledWidth = card.width * newScale;
+          return { 
+            x: centerX-(scaledWidth+(10*window.devicePixelRatio)) + (i*(scaledWidth+(10*window.devicePixelRatio))),
+            y: this.scale.height-(scaledHeight*2+(10*window.devicePixelRatio)),
+            scale: newScale 
+          }
+        },
+        LEFT: (card, i) => { 
+          const newScale = 0.3;
+          const scaledHeight = card.height * newScale;
+          const scaledWidth = card.width * newScale;
+          return { 
+            x: (scaledHeight*1.5+(10*window.devicePixelRatio)),
+            y: centerY-(scaledWidth+(10*window.devicePixelRatio)) + (i*(scaledWidth+(10*window.devicePixelRatio))),
+            angle: 90,
+            scale: newScale 
+          }
+        },
       }
 
       /** @type {{ UP: PositionFunc, RIGHT: PositionFunc, DOWN: PositionFunc, LEFT: PositionFunc}} */
       this.HAND_POS = {
-        UP: (card, i) => ({
-          x: centerX,
-          y: (card.displayHeight/2)+(5*window.devicePixelRatio),
-          scale: 0.3
-        }),
-        RIGHT: (card, i) => ({
-          x: this.scale.width-((card.displayHeight/2)+(5*window.devicePixelRatio)),
-          y: centerY,
-          angle: 270,
-          scale: 0.3
-        }),
-        DOWN: (card, i) => ({
-          x: centerX-((card.displayWidth*2.5)+((10*window.devicePixelRatio)*2.5)) + (i*(card.displayWidth+(10*window.devicePixelRatio))),
-          y: this.scale.height-((card.displayHeight/2)+(10*window.devicePixelRatio)),
-          scale: 0.4,
-          texture: card.getData("value")
-        }),
-        LEFT: (card, i) => ({
-          x: (card.displayHeight/2)+(5*window.devicePixelRatio),
-          y: centerY,
-          angle: 90,
-          scale: 0.3
-        }),
+        UP: (card, i) => {
+          const newScale = 0.3;
+          const scaledHeight = card.height * newScale;
+          return {
+            x: centerX,
+            y: (scaledHeight/2)+(5*window.devicePixelRatio),
+            scale: newScale
+          }
+        },
+        RIGHT: (card, i) => {
+          const newScale = 0.3;
+          const scaledHeight = card.height * newScale;
+          return {
+            x: this.scale.width-((scaledHeight/2)+(5*window.devicePixelRatio)),
+            y: centerY,
+            angle: 270,
+            scale: newScale 
+          }
+        },
+        DOWN: (card, i) => {
+          const newScale = 0.4;
+          const scaledHeight = card.height * newScale;
+          const scaledWidth = card.width * newScale;
+          return {
+            x: centerX-((scaledWidth*2.5)+((10*window.devicePixelRatio)*2.5)) + (i*(scaledWidth+(10*window.devicePixelRatio))),
+            y: this.scale.height-((scaledHeight/2)+(10*window.devicePixelRatio)),
+            scale: newScale,
+            texture: card.getData("value")
+          }
+        },
+        LEFT: (card, i) => {
+          const newScale = 0.3;
+          const scaledHeight = card.height * newScale;
+          return {
+            x: (scaledHeight/2)+(5*window.devicePixelRatio),
+            y: centerY,
+            angle: 90,
+            scale: newScale 
+          }
+        },
       }
 
       // create player cards
